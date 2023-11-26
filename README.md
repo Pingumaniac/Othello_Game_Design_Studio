@@ -10,7 +10,7 @@ Othello Game Studio is a comprehensive design studio for creating and playing th
 1. Node.js (version 20.9.0 LTS or higher)
 2. Python3 (version 3.11.0 or higher, if applicable)
 
-## Steps 
+### Steps 
 1. Open the terminal and clone the repository 
 ```
 git clone https://github.com/Pingumaniac/Othello_Game_Design_Studio.git

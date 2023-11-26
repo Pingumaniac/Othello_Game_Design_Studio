@@ -1,0 +1,25 @@
+{
+  "components": {
+    "addons": {},
+    "decorators": {},
+    "layouts": {},
+    "plugins": {
+      "myPlugin": {
+        "src": "src/plugins/myPlugin",
+        "test": "test/plugins/myPlugin"
+      }
+    },
+    "routers": {},
+    "seeds": {},
+    "visualizers": {}
+  },
+  "dependencies": {
+    "addons": {},
+    "decorators": {},
+    "layouts": {},
+    "plugins": {},
+    "routers": {},
+    "seeds": {},
+    "visualizers": {}
+  }
+}

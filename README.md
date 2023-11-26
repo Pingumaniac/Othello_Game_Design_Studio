@@ -20,7 +20,7 @@ cd [repository directory/myminiproject]
 ```
 npm install
 ```
-3. Download/Install Docker Desktop from the following url: [https://www.docker.com/products/docker-desktop/]
+3. Download/Install Docker Desktop from the following url: https://www.docker.com/products/docker-desktop/
 4. Download/Install the latest version of mongo in Docker Image.
 5. Create an image of mongo. For optional settings, please set the Host path as
 ```

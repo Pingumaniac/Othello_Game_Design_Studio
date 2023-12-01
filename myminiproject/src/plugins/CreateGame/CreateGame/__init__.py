@@ -35,7 +35,7 @@ class CreateGame(PluginBase):
                 max_index = index
         new_game = core.create_node({
             'parent': active_node, 
-            'base': META['TicTacToeGame']
+            'base': META['OthelloGame']
         });
         core.set_attribute(new_game, 'name', 'game-' + format(max_index+1, '03d'))
         

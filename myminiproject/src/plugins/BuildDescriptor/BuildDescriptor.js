@@ -11,8 +11,8 @@ define([
     'plugin/PluginConfig',
     'text!./metadata.json',
     'plugin/PluginBase',
-    'mic-react-viz/constants',
-    'mic-react-viz/utils'
+    'Othello_Game_Design_Studio/constants',
+    'Othello_Game_Design_Studio/utils'
 ], function (
     PluginConfig,
     pluginMetadata,

@@ -19,6 +19,9 @@ cd [repository directory/myminiproject]
 2. Install dependencies
 ```
 npm install
+npm install webgme
+npm install webgme-bindings
+pip3 install webgme-bindings
 ```
 3. Download/Install Docker Desktop from the following url: https://www.docker.com/products/docker-desktop/
 4. Download/Install the latest version of mongo in Docker Image.

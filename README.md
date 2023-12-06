@@ -7,7 +7,7 @@ Othello Game Studio is a comprehensive design studio for creating and playing th
 ## Installation Instructions
 
 ### Prerequisites
-1. Node.js (version 20.9.0 LTS or higher)
+1. Node.js (version 18 LTS or higher)
 2. Python3 (version 3.11.0 or higher, if applicable)
 
 ### Steps 
@@ -16,12 +16,17 @@ Othello Game Studio is a comprehensive design studio for creating and playing th
 git clone https://github.com/Pingumaniac/Othello_Game_Design_Studio.git
 cd [repository directory/myminiproject]
 ```
-2. Install dependencies
+2. Install dependencies (use Powershell for Windows, Terminal for macOS)
 ```
 npm install
 npm install webgme
-npm install webgme-bindings
+npm install zeromq
+pip3 install zmq
 pip3 install webgme-bindings
+npm install webgme-bindings
+webgme import ciz ICore webgme-icore
+webgme import plugin PyCoreExecutor webgme-icore
+webgme import router BindingsDocs webgme-bindings
 ```
 3. Download/Install Docker Desktop from the following url: https://www.docker.com/products/docker-desktop/
 4. Download/Install the latest version of mongo in Docker Image.
@@ -33,6 +38,7 @@ and set the Container path as
 ```
 /data/db
 ```
+The port number should be 27018 not 27017 (which is default).
 6. From the terminal, enter the following command.
 ```
 node app.js
@@ -79,4 +85,8 @@ node app.js
 * src/: Source code directory.
 
 ## Deployment
-Follow the installation instructions to deploy the Othello Game Studio on your local machine. Ensure all dependencies are installed for a smooth setup.
+* Follow the installation instructions to deploy the Othello Game Studio on your local machine. Ensure all dependencies are installed for a smooth setup.
+* You can create a new seed by typing the following command on terminal:
+```
+webgme new seed [seed_name]
+```

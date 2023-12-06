@@ -7,11 +7,39 @@
       "myPlugin": {
         "src": "src/plugins/myPlugin",
         "test": "test/plugins/myPlugin"
+      },
+      "BuildDescriptor": {
+        "src": "src/plugins/BuildDescriptor",
+        "test": "test/plugins/BuildDescriptor"
+      },
+      "CheckWinCondition": {
+        "src": "src/plugins/CheckWinCondition",
+        "test": "test/plugins/CheckWinCondition"
+      },
+      "CreateGame": {
+        "src": "src/plugins/CreateGame",
+        "test": "test/plugins/CreateGame"
+      },
+      "PlayerMoves": {
+        "src": "src/plugins/PlayerMoves",
+        "test": "test/plugins/PlayerMoves"
       }
     },
     "routers": {},
-    "seeds": {},
-    "visualizers": {}
+    "seeds": {
+      "TicTacToe": {
+        "src": "src/seeds/TicTacToe"
+      }
+    },
+    "visualizers": {
+      "ReactToe": {
+        "src": "panels/OthelloViz/OthelloVizPanel",
+        "title": "OthelloViz",
+        "panel": "src/visualizers/panels/OthelloViz",
+        "secondary": false,
+        "widget": "src/visualizers/widgets/OthelloViz"
+      }
+    }
   },
   "dependencies": {
     "addons": {},

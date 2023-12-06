@@ -28,7 +28,7 @@
     "routers": {},
     "seeds": {
       "TicTacToe": {
-        "src": "src/seeds/TicTacToe"
+        "src": "src/seeds/seeds"
       }
     },
     "visualizers": {

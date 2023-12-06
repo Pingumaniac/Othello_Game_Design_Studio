@@ -24,9 +24,13 @@ npm install zeromq
 pip3 install zmq
 pip3 install webgme-bindings
 npm install webgme-bindings
+```
+Install these commands inside ./myminiproject/node_modules/webgme-bindings/python/webgme-bindings
+```
 webgme import ciz ICore webgme-icore
 webgme import plugin PyCoreExecutor webgme-icore
 webgme import router BindingsDocs webgme-bindings
+pip3 install -e .
 ```
 3. Download/Install Docker Desktop from the following url: https://www.docker.com/products/docker-desktop/
 4. Download/Install the latest version of mongo in Docker Image.

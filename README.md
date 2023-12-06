@@ -27,7 +27,7 @@ npm install webgme-bindings
 ```
 Install these commands inside ./myminiproject/node_modules/webgme-bindings/python/webgme-bindings
 ```
-webgme import ciz ICore webgme-icore
+webgme import viz ICore webgme-icore
 webgme import plugin PyCoreExecutor webgme-icore
 webgme import router BindingsDocs webgme-bindings
 pip3 install -e .

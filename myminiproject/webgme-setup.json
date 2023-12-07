@@ -32,7 +32,7 @@
       }
     },
     "visualizers": {
-      "ReactToe": {
+      "OthelloViz": {
         "src": "panels/OthelloViz/OthelloVizPanel",
         "title": "OthelloViz",
         "panel": "src/visualizers/panels/OthelloViz",

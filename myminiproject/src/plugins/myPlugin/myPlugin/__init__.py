@@ -102,7 +102,8 @@ class myPlugin(PluginBase):
             game_state['board'] = board
             all_states.append(game_state)
     
-    # Codes from HW6 placed here: Check if the next move is viable    
+    # Codes from HW6 placed here: Check if the next move is viable  
+    """
     current_node = self.active_node
     self.logger.info("current_node: {}".format(self.active_node))
     board = self.core.get_parent(current_node)
@@ -206,51 +207,108 @@ class myPlugin(PluginBase):
             if len(self.core.get_children_paths(tile)) > 0:
               piece_path = self.core.get_children_paths(tile)[0]
               self.core.set_attribute(self.core.load_by_path(self.root_node, piece_path), 'color', self.next_move_color)
+    """
     self.util.save(self.root_node, self.commit_hash, self.branch_name)
     
   # Methods for the mini project
-  def highlight_valid_tiles(self):
-    valid_tiles = []
-    current_game_state_path = self.core.get_pointer_path(self.active_node,'currentGameState')
-    game_state = self.nodes[current_game_state_path]
-    self.logger.info("{0}".format(game_state))
-    state_children_paths = self.core.get_children_paths(game_state)
-    self.logger.info("{0}".format(state_children_paths))
-    state_child_node = self.core.load_by_path(self.root_node, state_child_path)
-    return valid_tiles
+  def check_valid(self, tile):
+    import math        
+    active_node = tile      
+    self.namespace = None         
+    self.logger.info('Current Node : {0},{1}'.format(self.core.get_attribute(active_node,'row'), self.core.get_attribute(active_node,'column')))
+    board = self.core.get_parent(active_node)
+    gamestate = self.core.get_parent(board)
+    nodesList = self.core.load_sub_tree(gamestate)                                          
+    nodes = {}  
+    for node in nodesList:      
+      nodes[self.core.get_path(node)] = node  
+      state = {}        
+      state['name'] = self.core.get_attribute(gamestate, 'name')        
+      self.logger.info(state)        
+      current_player_path = self.core.get_pointer_path(gamestate, 'currentPlayer')        
+      if current_player_path!=None :           
+        state['currentPlayer'] = self.core.get_attribute(nodes[current_player_path],'name')        
+      else :           
+         state['currentPlayer']=None 
+      row = self.core.get_attribute(active_node,'row')
+      column = self.core.get_attribute(active_node,'column')
+      state['currentMove'] = {'row':row,'column':column}        
+      board = [[{'color':'none'},{'color':'none'},{'color':'none'},{'color':'none'},{'color':'none'},{'color':'none'},{'color':'none'},{'color':'none'}]
+               , [{'color':'none'},{'color':'none'},{'color':'none'},{'color':'none'},{'color':'none'},{'color':'none'},{'color':'none'},{'color':'none'}]
+               , [{'color':'none'},{'color':'none'},{'color':'none'},{'color':'none'},{'color':'none'},{'color':'none'},{'color':'none'},{'color':'none'}]
+               ,[{'color':'none'},{'color':'none'},{'color':'none'},{'color':'none'},{'color':'none'},{'color':'none'},{'color':'none'},{'color':'none'}]
+               , [{'color':'none'},{'color':'none'},{'color':'none'},{'color':'none'},{'color':'none'},{'color':'none'},{'color':'none'},{'color':'none'}]
+               , [{'color':'none'},{'color':'none'},{'color':'none'},{'color':'none'},{'color':'none'},{'color':'none'},{'color':'none'},{'color':'none'}]
+               , [{'color':'none'},{'color':'none'},{'color':'none'},{'color':'none'},{'color':'none'},{'color':'none'},{'color':'none'},{'color':'none'}]
+               , [{'color':'none'},{'color':'none'},{'color':'none'},{'color':'none'},{'color':'none'},{'color':'none'},{'color':'none'},{'color':'none'}]
+              ]        
+      for child in self.core.get_children_paths(gamestate):          
+        if (self.core.is_instance_of(nodes[child], META['Board'])):            
+          for tile in self.core.get_children_paths(nodes[child]):              
+            for piece in self.core.get_children_paths(nodes[tile]):
+              board[self.core.get_attribute(nodes[tile],'row')][self.core.get_attribute(nodes[tile],'column')]['color'] = self.core.get_attribute(nodes[piece],'color')
+      state['board'] = board
+      self.logger.info(state['board'])
+      self.logger.info("Gamestate node path before next{0}".format(gamestate["nodePath"]))
+      next_game_state = self.core.copy_node(gamestate, self.core.get_parent(gamestate))
+      self.core.set_pointer(next_gs,'prev',gamestate)
+      next_name = self.core.get_attribute(gamestate,'name')+str(1)
+      self.core.set_attribute(next_game_state,'name',next_name)
+      next_nodes={}
+      self.logger.info("Gamestate nodepath after next{0}".format(gamestate["nodePath"]))
+      for node in self.core.load_sub_tree(next_gs) :      
+        next_nodes[self.core.get_path(node)] = node 
 
-  def is_move_valid(self, row, col, board):
-    return False  
+  def count_color(self, color):
+    color_count = 0
+    children_pointer_list = self.core.get_children_paths(self.active_node)
+    for children_pointer in children_pointer_list:
+      child = self.nodes[children_pointer]
+      if (self.core.is_instance_of(child, self.META['Board'])):
+        for tile in self.core.get_children_paths(child):
+          tile = self.nodes[tile]
+          for piece_path in self.core.get_children_paths(tile):
+            piece = self.nodes[piece_path]
+            if color == self.core.get_attribute(piece, 'color'):
+              color_count=color_count+1
+    return color_count
 
-  def count_pieces(self):
-    game_state = self.active_node
-    board = self.get_board(game_state)
-    count = {'black': 0, 'white': 0}
-    for row in board:
-      for tile in row:
-        if tile['color'] == 'black':
-          count['black'] += 1
-        elif tile['color'] == 'white':
-          count['white'] += 1
-    return count
-
-  def perform_flipping(self):
-    for row, col in self.to_flip:
-      self.flip_piece(row, col)
-
-  def flip_piece(self, row, col):
-    game_state = self.active_node  
-    board = self.get_board(game_state)
-    tile = board[row][col]
-    tile['color'] = 'white' if tile['color'] == 'black' else 'black'
-
+  def flip_tiles(self, next_game_state, next_nodes, ft, player_color):
+    next_board=None
+    flipped_tiles = []
+    for c in self.core.get_children_paths(next_game_state):
+      child = next_nodes[c]
+      if (self.core.is_instance_of(child,META['Board'])):
+        next_board=child
+        for tile in core.get_children_paths(next_board):
+          tile=next_nodes[tile]
+          next_pos=(core.get_attribute(tile,'row'), self.core.get_attribute(tile,'column'))
+          for t in ft :
+            if t==next_pos:
+              flip_piece=next_nodes[self.core.get_children_paths(tile)[0]]
+              core.set_attribute(flip_piece,'color',player_color)
+              flipped_tiles.append(tile)
+        return flipped_tiles 
+                
   def undo(self):
-    prev_state_path = self.core.get_pointer_path(self.active_node, 'prev')
-    prev_state = self.core.load_by_path(self.root_node, prev_state_path)
-    self.core.set_pointer(game_folder, 'currentState', prev_state)
-    self.core.delete_node(self.active_node)
-    self.util.save(self.root_node, self.commit_hash, self.branch_name)
+    game_folder=self.core.get_parent(self.active_node)
+    game_state=self.active_node
+    nodesList = self.core.load_sub_tree(game_folder)                                          
+    nodes = {}
+    for node in nodesList:      
+      nodes[self.core.get_path(node)] = node 
+    prev_state_path=self.core.get_pointer_path(game_state,'prev')
+    if prev_state_path is None : 
+      self.logger.info("Can't undo initial game state ")
+      return  
+    prev_state=nodes[prev_state_path]#doubtfull
+    self.core.set_pointer(game_folder,'currentState',prev_state)
+    self.core.delete_node(game_state)
+    self.util.save(self.root_node,self.commit_hash,self.branch_name)
 
+  def check_tile_exist(self, tile, row_con, col_con):       
+    return row_con < tile[0] or tile[1]> col_con or tile[0] < 0 or tile[1] < 0 
+  
   def auto(self):
     valid_moves = self.highlight_valid_tiles()
     optimal_move = self.select_optimal_move(valid_moves)
@@ -260,9 +318,89 @@ class myPlugin(PluginBase):
   def select_optimal_move(self, valid_moves):
     return valid_moves[0] if valid_moves else None  
 
-  def place_piece(self, move):
-    # Place a piece on the board as per the move
-    if move:
-      row, col = move
-      board = self.current_game_state["board"]
-      board[row][col]['color'] = 'black' 
+  def set_next_player(self, next_game_state, next_nodes):
+    current_player_path = self.core.get_pointer_path(next_game_state,'currentPlayer')
+    current_player = next_nodes[cp_path]
+    for c in self.core.get_children_paths(next_game_state):
+      child=next_nodes[c]
+      if (self.core.is_instance_of(child, self.META['Player']) and child!=current_player):
+        self.core.set_pointer(next_game_state,'currentPlayer',child)
+        next_player_path=  self.core.get_pointer_path(next_game_state,'currentPlayer')
+        next_player = next_nodes[np_path]                
+        return core.get_attribute(next_player,'color')
+         
+  def set_next_move(self, next_game_state, next_nodes, pos, player_color):
+    next_board = None
+    for c in self.core.get_children_paths(next_game_state):
+      child=next_nodes[c]
+      if (self.core.is_instance_of(child,META['Board'])):
+        next_board=child 
+      for tile in self.core.get_children_paths(next_board):
+        tile = next_nodes[tile]
+        self.logger.debug(tile['nodePath'])
+        self.logger.debug(next_gs['nodePath'])
+        next_pos = (self.core.get_attribute(tile,'row'), self.core.get_attribute(tile,'column'))
+        if next_pos == pos: 
+          next_piece = self.core.create_child(tile,META['Piece'])
+          next_nodes[self.core.get_path(next_piece)]=next_piece
+          self.core.set_attribute(next_piece,'color',player_color)
+          self.core.set_pointer(next_gs,'currentMove',next_piece)
+          next_move_path=core.get_pointer_path(next_game_state,'currentMove')
+          next_move = next_nodes[next_move_path]
+          return self.core.get_attribute(next_move,'color')
+      
+  def check_logic(self, state):
+    player = state['currentPlayer']
+    currentMove = state['currentMove']
+    if currentMove is None:
+      return False
+    currentColor = 'white' if player == 'PlayerBlack' else 'black'
+    oppColor = 'black' if currentColor == 'white' else 'white'
+    row, col = currentMove['row'], currentMove['column']
+    result, tile_flip = process_directions(state, row, col, currentColor, oppColor)
+    if result:
+      self.logger.info('Is a valid move')
+    else:
+      self.logger.error('Not a Valid Move')
+    return result, tile_flip
+
+  def process_directions(state, row, col, currentColor, oppColor):
+    tile_flip = []
+    tile_flip_dir = [[] for _ in range(8)]
+    valid = [False] * 8
+    state = [-1] * 8
+    result = False
+    k = 0
+    while any(state_val >= 0 for state_val in state):
+      k += 1
+      dirs = [(row, col + k), (row + k, col), (row, col - k), (row - k, col),
+              (row + k, col + k), (row + k, col - k), (row - k, col + k), (row - k, col - k)]
+      for i, direction in enumerate(dirs):
+        state[i], temp_flip = is_tile_valid(state[i], direction, state['board'], currentColor, oppColor)
+        tile_flip_dir[i].extend(temp_flip)
+      result, valid = update_flip_tiles(state, valid, tile_flip_dir, tile_flip)
+    if result:
+      return result, tile_flip
+    return result, tile_flip
+
+  def is_tile_valid(self, state, direction, board, currentColor, oppColor):
+    row, col = direction
+    tile_flip = []
+    if not check_tile_exist(row, col) or board[row][col]['color'] == "none":
+      return float('-inf'), tile_flip
+    if board[row][col]['color'] == oppColor:
+      return 0, [(row, col)]
+    if board[row][col]['color'] == currentColor and state == 0:
+      return 1, []
+    return state, tile_flip
+
+  def update_flip_tiles(self, state, valid, tile_flip_dir, tile_flip):
+    result = False
+    for i in range(len(valid)):
+      if state[i] > 0:
+        valid[i] = True
+        tile_flip.extend(tile_flip_dir[i])
+      else:
+        valid[i] = False
+      result = result or valid[i]
+    return result, valid

@@ -27,7 +27,7 @@
     },
     "routers": {},
     "seeds": {
-      "TicTacToe": {
+      "OthelloViz": {
         "src": "src/seeds/seeds"
       }
     },

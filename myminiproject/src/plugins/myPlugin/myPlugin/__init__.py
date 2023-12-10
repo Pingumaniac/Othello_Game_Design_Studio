@@ -349,7 +349,7 @@ class myPlugin(PluginBase):
           next_move = next_nodes[next_move_path]
           return self.core.get_attribute(next_move,'color')
       
-  def check_logic(self, state):
+  def check_valid_move(self, state):
     player = state['currentPlayer']
     currentMove = state['currentMove']
     if currentMove is None:
@@ -364,7 +364,7 @@ class myPlugin(PluginBase):
       self.logger.error('Not a Valid Move')
     return result, tile_flip
 
-  def process_directions(state, row, col, currentColor, oppColor):
+  def process_directions(self, state, row, col, currentColor, oppColor):
     tile_flip = []
     tile_flip_dir = [[] for _ in range(8)]
     valid = [False] * 8
